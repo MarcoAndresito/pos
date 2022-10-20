@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\librosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,11 +48,11 @@ Route::get('/saludar', function () {
     return '!Hola Munddo¡';
 })->name('apiLibros.saludar');
 
-Route::get('/v1/libros', [App\Http\Controllers\librosController::class, 'obtenerLibros'])
+Route::get('/v1/libros', [librosController::class, 'obtenerLibros'])
     ->name('apiLibros.listar');
 
-Route::get('/v1/libros/{id}', [App\Http\Controllers\librosController::class, 'obtenerLibro'])
+Route::get('/v1/libros/{id}', [librosController::class, 'obtenerLibro'])
     ->name('apiLibros.obtener');
 
-Route::get('/v2/libros', [App\Http\Controllers\librosController::class, 'obtenerLibrosv2'])
+Route::get('/v2/libros', [librosController::class, 'obtenerLibrosv2'])
     ->name('apiLibros.listarv2');
