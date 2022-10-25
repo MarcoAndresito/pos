@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\librosController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,11 +32,19 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    
+
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::get('/test', function () {
+        return Inertia::render('test');
+    });
+
+    Route::get('/Categoria', [CategoryController::class, 'index'])
+        ->name('category.index');
+
+    Route::get('/Categoria/Crear', [CategoryController::class, 'create']);
 });
 
 Route::get('/saludar', function () {
