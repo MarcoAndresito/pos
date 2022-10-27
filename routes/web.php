@@ -41,10 +41,7 @@ Route::middleware([
         return Inertia::render('test');
     });
 
-    Route::get('/Categoria', [CategoryController::class, 'index'])
-        ->name('category.index');
-
-    Route::get('/Categoria/Crear', [CategoryController::class, 'create']);
+    Route::resource('category', CategoryController::class);
 });
 
 Route::get('/saludar', function () {
