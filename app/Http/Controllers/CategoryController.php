@@ -50,7 +50,10 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id);
+        return Inertia::render('Category/show', [
+            'category' => $category,
+        ]);
     }
 
     /**

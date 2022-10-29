@@ -1,6 +1,7 @@
 <script setup>
 import AppLayoutVue from '../../Layouts/AppLayout.vue';
-import ActionSection from '../../Components/ActionSection.vue';
+import ActionSection from '@/Components/ActionSection.vue';
+import { Link } from '@inertiajs/inertia-vue3';
 defineProps({
     categories: Array,
 });
@@ -8,7 +9,9 @@ defineProps({
 <template>
     <AppLayoutVue>
         <template #header>
-            Pagina Categorias
+
+            <Link class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded" v-bind:href="route('category.create')" as="button">Nuevo</Link>
+
         </template>
 
         <!-- <p v-for="juan in categories">{{juan.name}}</p> -->
@@ -26,12 +29,15 @@ defineProps({
                 <template #content>
                     <table class="w-full">
                         <thead>
-                            <tr>
+                            <tr class="text-left">
                                 <th>
                                     Nombre
                                 </th>
                                 <th>
                                     Tipo
+                                </th>
+                                <th>
+                                    Ver
                                 </th>
                             </tr>
                         </thead>
@@ -42,6 +48,9 @@ defineProps({
                                 </td>
                                 <td>
                                     {{ category.type }}
+                                </td>
+                                <td>
+                                    <Link class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded" v-bind:href="route('category.show', category.id)" as="button">ver</Link>
                                 </td>
                             </tr>
                         </tbody>
