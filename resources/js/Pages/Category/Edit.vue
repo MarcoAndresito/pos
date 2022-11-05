@@ -7,20 +7,24 @@ import ImputError from '../../Components/InputError.vue';
 import PrimaryButton from '../../Components/PrimaryButton.vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 
+const data = defineProps({
+    category: Object,
+});
+
 const form = useForm({
-    name: '',
-    type: '',
+    name: data.category.name,
+    type: data.category.type,
 });
 
 function enviar() {
-    form.post(route('category.store'));
+    form.put(route('category.update', data.category.id));
 }
 
 </script>
 <template>
     <AppLayoutVue>
         <template #header>
-            Formulario para crear nueva categoria
+            Formulario para editar categoria
         </template>
         <template #default>
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
