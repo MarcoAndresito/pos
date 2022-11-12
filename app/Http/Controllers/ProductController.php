@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,24 +16,35 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('q')) {
-            $products = Product::all()->where('name', 'like', "%$request->q%");
+        $product = null;
+        if ($request->has('q') && $request->filled('q')) {
+            $products = Product::where('name', 'like', "%$request->q%")->get();
         } else {
             $products = Product::all();
         }
-        return Inertia::render('Category/Index', [
-            'products' => $products
+        if ($request->has('show') && $request->filled('show')) {
+            $product = Product::find($request->show);
+            $showDialogShow = true;
+        }
+        else{
+            $showDialogShow = false;
+        }
+        if ($request->has('edit') && $request->filled('edit')) {
+            $product = Product::find($request->edit);
+            $showDialogForm = true;
+        }
+        else{
+            $showDialogForm = false;
+        }
+        $categories = Category::all(['id', 'name']);
+        return Inertia::render('Product/Index', [
+            'products' => $products,
+            'categories' => $categories,
+            'q' => $request->q,
+            'product' => $product,
+            'showDialogShow' => $showDialogShow,
+            'showDialogForm' => $showDialogForm,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return Inertia::render('Product/Create');
     }
 
     /**
@@ -50,34 +62,6 @@ class ProductController extends Controller
             'price' => 'required',
             'stock' => 'required',
         ]));
-
-        return redirect()->route('product.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        return Inertia::render('Product/show', [
-            'product' => $product,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        return Inertia::render('Product/Edit', [
-            'product' => $product,
-        ]);
     }
 
     /**
@@ -96,7 +80,6 @@ class ProductController extends Controller
             'price' => 'required',
             'stock' => 'required',
         ]));
-        return redirect()->route('category.index');
     }
 
     /**
@@ -108,6 +91,5 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('product.index');
     }
 }

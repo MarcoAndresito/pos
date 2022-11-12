@@ -61,6 +61,13 @@ const logout = () => {
                                     Categorias
                                 </NavLink>
                             </div>
+
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('product.index')" :active="route().current('product.index')">
+                                    Productos
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -214,6 +221,9 @@ const logout = () => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('category.index')" :active="route().current('category.index')">
                             Category
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('product.index')" :active="route().current('product.index')">
+                            Productos
                         </ResponsiveNavLink>
                     </div>
 
