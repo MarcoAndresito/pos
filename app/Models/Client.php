@@ -20,4 +20,9 @@ class Client extends Model
     {
         return $this->hasMany(Sale::class);
     }
+
+    public function Contacs()
+    {
+        return $this->hasMany(Contac::class);
+    }
 }

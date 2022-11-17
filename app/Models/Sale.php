@@ -25,4 +25,14 @@ class Sale extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function Details()
+    {
+        return $this->hasMany(Detail::class);
+    }
+
+    public function Products()
+    {
+        return $this->belongsToMany(Product::class,'details');
+    }
 }

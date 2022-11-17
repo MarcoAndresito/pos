@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Product;
+use App\Models\Sale;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,8 +26,20 @@ class DatabaseSeeder extends Seeder
 
         // \App\Models\Category::factory(10)->create();
 
-        \App\Models\Product::factory(10)->create();
+        //\App\Models\Product::factory(10)->create();
 
-        \App\Models\Client::factory(10)->create();
+        //\App\Models\Client::factory(10)->create();
+
+        //\App\Models\Contac::factory(20)->create();
+
+        //\App\Models\Sale::factory()->create(10)->each(function (Sale $sale) {
+        //    $sale->Details()->saveMany(\App\Models\Detail::factory()->create(3));
+        //});
+
+        //\App\Models\Sale::factory()
+        //    ->has(\App\Models\Detail::factory()->count(3))
+        //    ->create(10);
+
+        //\App\Models\Sale::factory()->create(1);
     }
 }
