@@ -36,10 +36,11 @@ class DatabaseSeeder extends Seeder
         //    $sale->Details()->saveMany(\App\Models\Detail::factory()->create(3));
         //});
 
-        //\App\Models\Sale::factory()
-        //    ->has(\App\Models\Detail::factory()->count(3))
-        //    ->create(10);
+        //\App\Models\Sale::factory(1)->create();
+        //\App\Models\Detail::factory(2)->create();
 
-        //\App\Models\Sale::factory()->create(1);
+        \App\Models\Sale::factory(4)
+            ->has(\App\Models\Detail::factory()->count(2))
+            ->create();
     }
 }
