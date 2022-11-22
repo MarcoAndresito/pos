@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
-use App\Http\Requests\StoreSaleRequest;
-use App\Http\Requests\UpdateSaleRequest;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SaleController extends Controller
 {
@@ -15,7 +15,7 @@ class SaleController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Sale/Index', []);
     }
 
     /**
@@ -34,7 +34,7 @@ class SaleController extends Controller
      * @param  \App\Http\Requests\StoreSaleRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreSaleRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -68,7 +68,7 @@ class SaleController extends Controller
      * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSaleRequest $request, Sale $sale)
+    public function update(Request $request, Sale $sale)
     {
         //
     }

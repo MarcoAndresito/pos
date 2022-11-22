@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\librosController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,8 @@ Route::middleware([
     Route::post('product', [ProductController::class,'store'])->name('product.store');
     Route::put('product', [ProductController::class,'update'])->name('product.update');
     Route::delete('product', [ProductController::class,'destroy'])->name('product.destroy');
+
+    Route::get('sale', [SaleController::class,'index'])->name('sale.index');
 });
 
 Route::get('/saludar', function () {

@@ -68,6 +68,13 @@ const logout = () => {
                                     Productos
                                 </NavLink>
                             </div>
+
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('sale.index')" :active="route().current('sale.index')">
+                                    Venta
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -224,6 +231,9 @@ const logout = () => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('product.index')" :active="route().current('product.index')">
                             Productos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('sale.index')" :active="route().current('sale.index')">
+                            Venta
                         </ResponsiveNavLink>
                     </div>
 
