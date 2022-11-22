@@ -51,6 +51,8 @@ Route::middleware([
     Route::delete('product', [ProductController::class,'destroy'])->name('product.destroy');
 
     Route::get('sale', [SaleController::class,'index'])->name('sale.index');
+
+    Route::post('client', [SaleController::class,'store'])->name('client.store');
 });
 
 Route::get('/saludar', function () {
