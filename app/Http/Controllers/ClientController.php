@@ -4,9 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ClientController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if ($request->has('q') && $request->filled('q')) {
+            $clients = Client::where('name', 'like', "%$request->q%")->get();
+        } else {
+            $clients = Client::all();
+        }
+        return Inertia::render('Client/Index', [
+            'clients' => $clients,
+        ]);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -15,9 +34,10 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        Client::create($request->validate([
+        $request->validate([
             'nit' => 'required',
             'name' => 'required',
-        ]));
+        ]);
+        Client::create($request->all());
     }
 }

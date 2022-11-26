@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\librosController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 
@@ -45,14 +46,14 @@ Route::middleware([
 
     Route::resource('category', CategoryController::class);
 
-    Route::get('product', [ProductController::class,'index'])->name('product.index');
-    Route::post('product', [ProductController::class,'store'])->name('product.store');
-    Route::put('product', [ProductController::class,'update'])->name('product.update');
-    Route::delete('product', [ProductController::class,'destroy'])->name('product.destroy');
+    Route::get('product', [ProductController::class, 'index'])->name('product.index');
+    Route::post('product', [ProductController::class, 'store'])->name('product.store');
+    Route::put('product', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('product', [ProductController::class, 'destroy'])->name('product.destroy');
 
-    Route::get('sale', [SaleController::class,'index'])->name('sale.index');
+    Route::get('sale', [SaleController::class, 'index'])->name('sale.index');
 
-    Route::post('client', [SaleController::class,'store'])->name('client.store');
+    Route::resource('client', ClientController::class);
 });
 
 Route::get('/saludar', function () {

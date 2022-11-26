@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,9 +14,16 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Sale/Index', []);
+        if ($request->has('q') && $request->filled('q')) {
+            $clients = Client::where('name', 'like', "%$request->q%")->get();
+        } else {
+            $clients = Client::all();
+        }
+        return Inertia::render('Sale/Index', [
+            'clients' => Inertia::lazy(fn () => $clients),
+        ]);
     }
 
     /**
