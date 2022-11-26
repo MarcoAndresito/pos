@@ -16,14 +16,26 @@ class SaleController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('q') && $request->filled('q')) {
-            $clients = Client::where('name', 'like', "%$request->q%")->get();
-        } else {
-            $clients = Client::all();
-        }
         return Inertia::render('Sale/Index', [
-            'clients' => Inertia::lazy(fn () => $clients),
+            'clients' => Inertia::lazy(fn () => $this->getClients($request)),
+            'client' => Inertia::lazy(fn () => $this->getClient($request)),
         ]);
+    }
+
+    private function getClients(Request $request)
+    {
+        if ($request->has('q') && $request->filled('q')) {
+            return Client::where('name', 'like', "%$request->q%")->get();
+        } else {
+            return Client::all();
+        }
+    }
+
+    private function getClient(Request $request)
+    {
+        if ($request->has('id') && $request->filled('id')) {
+            return Client::find($request->id);
+        }
     }
 
     /**

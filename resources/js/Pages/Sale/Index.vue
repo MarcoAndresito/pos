@@ -22,7 +22,7 @@ const formNewClient = useForm({
     'birth_date': ''
 });
 const sendNewClient = () => {
-    formNewClient.post(route('client.store'), {
+    formNewClient.post(route('client.store', { backurl: 'sale.index' }), {
         onSuccess: () => {
             showDialogNewClient.value = false;
             formNewClient.reset();
@@ -34,6 +34,10 @@ const clientSearch = () => {
         only: ['clients']
     });
 }
+const selectClient = (client) => {
+    selectedclient.value = client;
+};
+const selectedclient = ref(Object);
 </script>
 
 <template>
@@ -65,17 +69,40 @@ const clientSearch = () => {
                                     @click="clientSearch">Buscar</button>
                             </div>
                         </div>
-                        <div class="col-span-6 sm:col-span-4">
-                            <table border="1">
+                        <div class="col-span-6 sm:col-span-4"
+                            v-if="(clients?.length ?? 0) > 0 && selectedclient.id == null">
+                            <table class="border-collapse w-full">
                                 <tr>
-                                    <th>nombre</th>
-                                    <th>nit</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Nombre</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Nit</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Acciones</th>
                                 </tr>
-                                <tr v-for="client in clients">
-                                    <td>{{ client.name }}</td>
-                                    <td>{{ client.nit }}</td>
+                                <tr v-for="client in clients"
+                                    class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        {{ client.name }}</td>
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        {{ client.nit }}</td>
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        <SecondaryButton @click="selectClient(client)">Seleccionar</SecondaryButton>
+                                    </td>
                                 </tr>
                             </table>
+                        </div>
+                        <div class="col-span-6 sm:col-span-4" v-if="selectedclient.id != null">
+                            <p>Id: {{ selectedclient.id }}</p>
+                            <p>Nombre: {{ selectedclient.name }}</p>
+                            <p>Apellido: {{ selectedclient.last_name }}</p>
+                            <p>Fecha Nacimiento: {{ selectedclient.birth_date }}</p>
                         </div>
                     </template>
                 </ActionSection>

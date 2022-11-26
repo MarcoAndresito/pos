@@ -38,6 +38,9 @@ class ClientController extends Controller
             'nit' => 'required',
             'name' => 'required',
         ]);
-        Client::create($request->all());
+        $newClient = Client::create($request->all());
+        if ($request->has($request->backurl) && $request->filled($request->backurl)) {
+            return redirect()->route($request->backurl, ['id' => $newClient->id]);
+        }
     }
 }
