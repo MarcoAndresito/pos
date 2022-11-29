@@ -18,7 +18,7 @@ class SaleController extends Controller
     {
         return Inertia::render('Sale/Index', [
             'clients' => Inertia::lazy(fn () => $this->getClients($request)),
-            'client' => Inertia::lazy(fn () => $this->getClient($request)),
+            'selectedClient' => Inertia::lazy(fn () => $this->getSelectedClient($request)),
         ]);
     }
 
@@ -31,7 +31,7 @@ class SaleController extends Controller
         }
     }
 
-    private function getClient(Request $request)
+    private function getSelectedClient(Request $request)
     {
         if ($request->has('id') && $request->filled('id')) {
             return Client::find($request->id);

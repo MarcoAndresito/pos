@@ -39,7 +39,7 @@ class ClientController extends Controller
             'name' => 'required',
         ]);
         $newClient = Client::create($request->all());
-        if ($request->has($request->backurl) && $request->filled($request->backurl)) {
+        if ($request->has('backurl') && $request->filled('backurl')) {
             return redirect()->route($request->backurl, ['id' => $newClient->id]);
         }
     }
