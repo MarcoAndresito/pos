@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\Client;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,15 +20,17 @@ class SaleController extends Controller
         return Inertia::render('Sale/Index', [
             'clients' => Inertia::lazy(fn () => $this->getClients($request)),
             'selectedClient' => Inertia::lazy(fn () => $this->getSelectedClient($request)),
+            'products' => Inertia::lazy(fn () => $this->getProducts($request)),
+            'selectedProduct' => Inertia::lazy(fn () => $this->getSelectedProduct($request)),
         ]);
     }
 
     private function getClients(Request $request)
     {
         if ($request->has('q') && $request->filled('q')) {
-            return Client::where('name', 'like', "%$request->q%")->get();
+            return Client::where('name', 'like', "%$request->q%")->get(['id', 'name', 'nit']);
         } else {
-            return Client::all();
+            return Client::all(['id', 'name', 'nit']);
         }
     }
 
@@ -35,6 +38,23 @@ class SaleController extends Controller
     {
         if ($request->has('id') && $request->filled('id')) {
             return Client::find($request->id);
+        }
+    }
+
+    private function getProducts(Request $request)
+    {
+        $columns = ['id', 'name', 'price'];
+        if ($request->has('q') && $request->filled('q')) {
+            return Product::where('name', 'like', "%$request->q%")->get($columns);
+        } else {
+            return Product::all($columns);
+        }
+    }
+
+    private function getSelectedProduct(Request $request)
+    {
+        if ($request->has('id') && $request->filled('id')) {
+            return Product::find($request->id);
         }
     }
 

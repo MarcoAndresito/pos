@@ -13,10 +13,14 @@ import { Inertia } from '@inertiajs/inertia';
 const data = defineProps({
     'user': Object,
     'clients': Array,
-    'selectedClient': Object
+    'selectedClient': Object,
+    'products': Array,
+    'selectedProduct': Object,
 });
 const showDialogNewClient = ref(false);
+const showDialogSearchProduct = ref(false);
 const queryClient = ref('');
+const queryProduct = ref('');
 const formNewClient = useForm({
     'nit': '',
     'name': '',
@@ -30,6 +34,7 @@ const formNewSale = useForm({
     'nit': '',
     'name': '',
     'sale_date': '',
+    'shopping_cart': []
 });
 const sendNewClient = () => {
     formNewClient.post(route('client.store', { backurl: 'sale.index' }), {
@@ -48,9 +53,17 @@ const clientSearch = () => {
         only: ['clients'],
         preserveState: true,
         preserveScroll: true,
-        onSuccess:()=>{
+        onSuccess: () => {
             formNewSale.client_id = null;
         }
+    });
+}
+const productSearch = () => {
+    showDialogSearchProduct.value = true;
+    Inertia.get(route('sale.index'), { q: queryProduct.value }, {
+        only: ['products'],
+        preserveState: true,
+        preserveScroll: true,
     });
 }
 const selectClient = (id) => {
@@ -65,6 +78,17 @@ const selectClient = (id) => {
         }
     })
 };
+const selectProduct = (id) => {
+    Inertia.get(route('sale.index'), { id: id }, {
+        only: ['selectedProduct'],
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            formNewSale.shopping_cart.push(data.selectedProduct);
+            showDialogSearchProduct.value = false;
+        }
+    })
+}
 </script>
 
 <template>
@@ -72,6 +96,21 @@ const selectClient = (id) => {
         <template #header>
             <SecondaryButton class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded"
                 @click="showDialogNewClient = true">Nuevo Cliente</SecondaryButton>
+            <div class="relative w-60 inline-flex">
+                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <input type="search" id="default-search"
+                    class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+                    placeholder="Search Mockups, Logos..." v-model="queryProduct">
+                <button type="button"
+                    class="text-white absolute right-2.5 bottom-2.5 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                    @click="productSearch">Buscar</button>
+            </div>
         </template>
         <template #default>
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -140,24 +179,50 @@ const selectClient = (id) => {
                         </div>
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="nit" value="Nit" />
-                            <TextInput type="text" name="nit" id="nit"
-                                v-model="formNewSale.nit" class="w-full">
+                            <TextInput type="text" name="nit" id="nit" v-model="formNewSale.nit" class="w-full">
                             </TextInput>
                             <ImputError v-bind:message="formNewSale.errors.nit"></ImputError>
                         </div>
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="name" value="Nombre" />
-                            <TextInput type="text" name="name" id="name"
-                                v-model="formNewSale.name" class="w-full">
+                            <TextInput type="text" name="name" id="name" v-model="formNewSale.name" class="w-full">
                             </TextInput>
                             <ImputError v-bind:message="formNewSale.errors.name"></ImputError>
                         </div>
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="sale_date" value="Fecha Venta" />
-                            <TextInput type="date" name="sale_date" id="sale_date"
-                                v-model="formNewSale.sale_date" class="w-full">
+                            <TextInput type="date" name="sale_date" id="sale_date" v-model="formNewSale.sale_date"
+                                class="w-full">
                             </TextInput>
                             <ImputError v-bind:message="formNewSale.errors.sale_date"></ImputError>
+                        </div>
+                        <div class="col-span-6 sm:col-span-4">
+                            <table class="border-collapse w-full">
+                                <tr>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Nombre</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Precio</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Acciones</th>
+                                </tr>
+                                <tr v-for="item in formNewSale.shopping_cart"
+                                    class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        {{ item.name }}</td>
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        {{ item.price }}</td>
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        <SecondaryButton>Quitar</SecondaryButton>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </template>
                     <template #actions>
@@ -205,6 +270,41 @@ const selectClient = (id) => {
                     </div>
                 </div>
             </form>
+        </template>
+    </DialogModal>
+
+    <DialogModal v-bind:show="showDialogSearchProduct">
+        <template #title>lista de productos</template>
+        <template #content>
+            <table class="border-collapse w-full">
+                <tr>
+                    <th
+                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                        Nombre</th>
+                    <th
+                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                        Precio</th>
+                    <th
+                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                        Acciones</th>
+                </tr>
+                <tr v-for="product in products"
+                    class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                    <td
+                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        {{ product.name }}</td>
+                    <td
+                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        {{ product.price }}</td>
+                    <td
+                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                        <SecondaryButton @click="selectProduct(product.id)">Seleccionar</SecondaryButton>
+                    </td>
+                </tr>
+            </table>
+        </template>
+        <template #footer>
+            <SecondaryButton v-on:click="showDialogSearchProduct = false">Cancelar</SecondaryButton>
         </template>
     </DialogModal>
 </template>
