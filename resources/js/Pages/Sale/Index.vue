@@ -7,6 +7,7 @@ import SecondaryButton from '../../Components/SecondaryButton.vue';
 import InputLabel from '../../Components/InputLabel.vue';
 import TextInput from '../../Components/TextInput.vue';
 import ImputError from '../../Components/InputError.vue';
+import SearchInput from '../../Components/SearchInput.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
@@ -19,8 +20,12 @@ const data = defineProps({
 });
 const showDialogNewClient = ref(false);
 const showDialogSearchProduct = ref(false);
-const queryClient = ref('');
-const queryProduct = ref('');
+const detailProduct = ref({
+    'product_id': '',
+    'name': '',
+    'quantity': '',
+    'price': '',
+});
 const formNewClient = useForm({
     'nit': '',
     'name': '',
@@ -48,8 +53,8 @@ const sendNewClient = () => {
         }
     });
 };
-const clientSearch = () => {
-    Inertia.get(route('sale.index'), { q: queryClient.value }, {
+const clientSearch = (query) => {
+    Inertia.get(route('sale.index'), { q: query }, {
         only: ['clients'],
         preserveState: true,
         preserveScroll: true,
@@ -58,9 +63,9 @@ const clientSearch = () => {
         }
     });
 }
-const productSearch = () => {
+const productSearch = (query) => {
     showDialogSearchProduct.value = true;
-    Inertia.get(route('sale.index'), { q: queryProduct.value }, {
+    Inertia.get(route('sale.index'), { q: query }, {
         only: ['products'],
         preserveState: true,
         preserveScroll: true,
@@ -84,10 +89,15 @@ const selectProduct = (id) => {
         preserveState: true,
         preserveScroll: true,
         onSuccess: () => {
-            formNewSale.shopping_cart.push(data.selectedProduct);
-            showDialogSearchProduct.value = false;
+            detailProduct.value.product_id = data.selectedProduct.id;
+            detailProduct.value.price = data.selectedProduct.price;
+            detailProduct.value.name = data.selectedProduct.name;
         }
     })
+}
+const addShoppingCart = () => {
+    formNewSale.shopping_cart.push(detailProduct.value);
+    showDialogSearchProduct.value = false;
 }
 </script>
 
@@ -96,21 +106,9 @@ const selectProduct = (id) => {
         <template #header>
             <SecondaryButton class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded"
                 @click="showDialogNewClient = true">Nuevo Cliente</SecondaryButton>
-            <div class="relative w-60 inline-flex">
-                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <input type="search" id="default-search"
-                    class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-                    placeholder="Search Mockups, Logos..." v-model="queryProduct">
-                <button type="button"
-                    class="text-white absolute right-2.5 bottom-2.5 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
-                    @click="productSearch">Buscar</button>
-            </div>
+            <SearchInput class="w-96 inline-flex" placeholder="Nombre producto..." textButton="Buscar producto"
+                @search="productSearch">
+            </SearchInput>
         </template>
         <template #default>
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -119,21 +117,8 @@ const selectProduct = (id) => {
                     <template #description>Ventas</template>
                     <template #form>
                         <div class="col-span-6 sm:col-span-4">
-                            <div class="relative">
-                                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </div>
-                                <input type="search" id="default-search"
-                                    class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-                                    placeholder="Search Mockups, Logos..." v-model="queryClient">
-                                <button type="button"
-                                    class="text-white absolute right-2.5 bottom-2.5 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
-                                    @click="clientSearch">Buscar</button>
-                            </div>
+                            <SearchInput placeholder="Nombre cliente..." textButton="Buscar cliente"
+                                @search="clientSearch"></SearchInput>
                         </div>
                         <div class="col-span-6 sm:col-span-4"
                             v-if="(clients?.length ?? 0) > 0 && formNewSale.client_id == null">
@@ -207,6 +192,9 @@ const selectProduct = (id) => {
                                         Precio</th>
                                     <th
                                         class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                                        Cantidad</th>
+                                    <th
+                                        class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
                                         Acciones</th>
                                 </tr>
                                 <tr v-for="item in formNewSale.shopping_cart"
@@ -217,6 +205,9 @@ const selectProduct = (id) => {
                                     <td
                                         class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                                         {{ item.price }}</td>
+                                    <td
+                                        class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                                        {{ item.quantity }}</td>
                                     <td
                                         class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                                         <SecondaryButton>Quitar</SecondaryButton>
@@ -276,7 +267,7 @@ const selectProduct = (id) => {
     <DialogModal v-bind:show="showDialogSearchProduct">
         <template #title>lista de productos</template>
         <template #content>
-            <table class="border-collapse w-full">
+            <table class="border-collapse w-full" v-if="(detailProduct.product_id == '')">
                 <tr>
                     <th
                         class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
@@ -302,8 +293,27 @@ const selectProduct = (id) => {
                     </td>
                 </tr>
             </table>
+            <div class="grid grid-cols-6 gap-6" v-else>
+                <div class="col-span-6 sm:col-span-4">
+                    <p><b>Id: </b><i>{{ detailProduct.product_id }}</i></p>
+                    <p><b>Nombre: </b><i>{{ selectedProduct.name }}</i></p>
+                    <p><b>Precio: </b><i>{{ selectedProduct.price }}</i></p>
+                </div>
+                <div class="col-span-6 sm:col-span-4">
+                    <InputLabel for="count" value="Cantidad" />
+                    <TextInput type="number" name="count" id="count" v-model="detailProduct.quantity" class="w-full">
+                    </TextInput>
+                </div>
+                <div class="col-span-6 sm:col-span-4">
+                    <InputLabel for="price" value="Precio" />
+                    <TextInput type="number" name="price" id="price" v-model="detailProduct.price" class="w-full">
+                    </TextInput>
+                </div>
+            </div>
         </template>
         <template #footer>
+            <SecondaryButton v-if="(detailProduct.product_id != '')" @click="addShoppingCart">Agregar al carrito
+            </SecondaryButton>
             <SecondaryButton v-on:click="showDialogSearchProduct = false">Cancelar</SecondaryButton>
         </template>
     </DialogModal>
