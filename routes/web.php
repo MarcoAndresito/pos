@@ -52,6 +52,7 @@ Route::middleware([
     Route::delete('product', [ProductController::class, 'destroy'])->name('product.destroy');
 
     Route::get('sale', [SaleController::class, 'index'])->name('sale.index');
+    Route::post('sale', [SaleController::class, 'store'])->name('sale.store');
 
     Route::resource('client', ClientController::class);
 });

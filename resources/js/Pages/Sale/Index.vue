@@ -96,8 +96,17 @@ const selectProduct = (id) => {
     })
 }
 const addShoppingCart = () => {
-    formNewSale.shopping_cart.push(detailProduct.value);
+    formNewSale.shopping_cart.push({ ...detailProduct.value });
     showDialogSearchProduct.value = false;
+    detailProduct.value.product_id = ''
+    detailProduct.value.name = ''
+    detailProduct.value.price = ''
+}
+const removeShoppingCart = (id) => {
+    formNewSale.shopping_cart = formNewSale.shopping_cart.filter((value, index, array) => value.product_id != id);
+}
+const sale = () => {
+    formNewSale.post(route('sale.store'))
 }
 </script>
 
@@ -112,7 +121,7 @@ const addShoppingCart = () => {
         </template>
         <template #default>
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <FormSection>
+                <FormSection v-on:submitted="sale">
                     <template #title>Ventas</template>
                     <template #description>Ventas</template>
                     <template #form>
@@ -150,10 +159,10 @@ const addShoppingCart = () => {
                             </table>
                         </div>
                         <div class="col-span-6 sm:col-span-4" v-if="formNewSale.client_id != null">
-                            <p>Id: {{ selectedClient.id }}</p>
-                            <p>Nombre: {{ selectedClient.name }}</p>
-                            <p>Apellido: {{ selectedClient.last_name }}</p>
-                            <p>Fecha Nacimiento: {{ selectedClient.birth_date }}</p>
+                            <p>Id: {{ selectedClient?.id }}</p>
+                            <p>Nombre: {{ selectedClient?.name }}</p>
+                            <p>Apellido: {{ selectedClient?.last_name }}</p>
+                            <p>Fecha Nacimiento: {{ selectedClient?.birth_date }}</p>
                         </div>
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="invoice_number" value="Numero de factura" />
@@ -210,7 +219,8 @@ const addShoppingCart = () => {
                                         {{ item.quantity }}</td>
                                     <td
                                         class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                                        <SecondaryButton>Quitar</SecondaryButton>
+                                        <SecondaryButton v-on:click="removeShoppingCart(item.product_id)">Quitar
+                                        </SecondaryButton>
                                     </td>
                                 </tr>
                             </table>

@@ -76,7 +76,9 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newSale = Sale::create($request->all());
+        $newSale->Details()->createMany($request->shopping_cart);
+        return redirect()->route('sale.index');
     }
 
     /**
