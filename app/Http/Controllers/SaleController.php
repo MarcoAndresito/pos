@@ -18,44 +18,8 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Sale/Index', [
-            'clients' => Inertia::lazy(fn () => $this->getClients($request)),
-            'selectedClient' => Inertia::lazy(fn () => $this->getSelectedClient($request)),
-            'products' => Inertia::lazy(fn () => $this->getProducts($request)),
-            'selectedProduct' => Inertia::lazy(fn () => $this->getSelectedProduct($request)),
+            'sales' => Sale::all(),
         ]);
-    }
-
-    private function getClients(Request $request)
-    {
-        if ($request->has('q') && $request->filled('q')) {
-            return Client::where('name', 'like', "%$request->q%")->get(['id', 'name', 'nit']);
-        } else {
-            return Client::all(['id', 'name', 'nit']);
-        }
-    }
-
-    private function getSelectedClient(Request $request)
-    {
-        if ($request->has('id') && $request->filled('id')) {
-            return Client::find($request->id);
-        }
-    }
-
-    private function getProducts(Request $request)
-    {
-        $columns = ['id', 'name', 'price'];
-        if ($request->has('q') && $request->filled('q')) {
-            return Product::where('name', 'like', "%$request->q%")->get($columns);
-        } else {
-            return Product::all($columns);
-        }
-    }
-
-    private function getSelectedProduct(Request $request)
-    {
-        if ($request->has('id') && $request->filled('id')) {
-            return Product::find($request->id);
-        }
     }
 
     /**
@@ -63,9 +27,14 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return Inertia::render('Sale/Create', [
+            'clients' => Inertia::lazy(fn () => $this->getClients($request)),
+            'selectedClient' => Inertia::lazy(fn () => $this->getSelectedClient($request)),
+            'products' => Inertia::lazy(fn () => $this->getProducts($request)),
+            'selectedProduct' => Inertia::lazy(fn () => $this->getSelectedProduct($request)),
+        ]);
     }
 
     /**
@@ -124,5 +93,38 @@ class SaleController extends Controller
     public function destroy(Sale $sale)
     {
         //
+    }
+
+    private function getClients(Request $request)
+    {
+        if ($request->has('q') && $request->filled('q')) {
+            return Client::where('name', 'like', "%$request->q%")->get(['id', 'name', 'nit']);
+        } else {
+            return Client::all(['id', 'name', 'nit']);
+        }
+    }
+
+    private function getSelectedClient(Request $request)
+    {
+        if ($request->has('id') && $request->filled('id')) {
+            return Client::find($request->id);
+        }
+    }
+
+    private function getProducts(Request $request)
+    {
+        $columns = ['id', 'name', 'price'];
+        if ($request->has('q') && $request->filled('q')) {
+            return Product::where('name', 'like', "%$request->q%")->get($columns);
+        } else {
+            return Product::all($columns);
+        }
+    }
+
+    private function getSelectedProduct(Request $request)
+    {
+        if ($request->has('id') && $request->filled('id')) {
+            return Product::find($request->id);
+        }
     }
 }
