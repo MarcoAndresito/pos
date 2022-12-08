@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SaleController extends Controller
 {
@@ -56,9 +57,13 @@ class SaleController extends Controller
      * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Http\Response
      */
-    public function show(Sale $sale)
+    public function show($id)
     {
-        //
+        $sale =  Sale::with('details')->find($id);
+        $pdf = Pdf::loadView('sale', [
+            'sale' => $sale,
+        ]);
+        return $pdf->stream("Factura-$sale->invoice_number.pdf");
     }
 
     /**

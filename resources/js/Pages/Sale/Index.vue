@@ -53,8 +53,8 @@ defineProps({
                                     {{ sale.sale_date }}
                                 </td>
                                 <td>
-                                    <Link class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded"
-                                        v-bind:href="route('sale.show', sale.id)" as="button">ver</Link>
+                                    <a class="m-2 py-2 px-4 bg-indigo-400 hover:bg-indigo-700 rounded"
+                                        v-bind:href="route('sale.show', sale.id)" target="_blank" as="button">ver</a>
                                 </td>
                             </tr>
                         </tbody>

@@ -54,7 +54,7 @@ Route::middleware([
     Route::get('sale', [SaleController::class, 'index'])->name('sale.index');
     Route::get('sale/create', [SaleController::class, 'create'])->name('sale.create');
     Route::post('sale', [SaleController::class, 'store'])->name('sale.store');
-    Route::get('sale/{id}', [SaleController::class, 'show'])->name('sale.show');
+    Route::get('sale/{sale}', [SaleController::class, 'show'])->name('sale.show');
 
     Route::resource('client', ClientController::class);
 });
