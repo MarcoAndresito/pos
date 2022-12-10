@@ -1,59 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .rojo {
-            color: #0000ff;
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Factura: #{{ $sale->invoice_number }}</title>
+    <style type="text/css">
+        * {
+            font-family: Verdana, Arial, sans-serif;
         }
 
-        .otrafuente {
-            font-family: sans-serif;
+        table {
+            font-size: x-small;
         }
 
-        .tabla {
-            width: 100%;
-            border: 1px solid #bbb;
+        tfoot tr td {
+            font-weight: bold;
+            font-size: x-small;
         }
 
-        .titulo {
-            text-align: left;
-            background: gray;
-            color: #fff;
+        .gray {
+            background-color: lightgray
         }
 
-        .celda {
-            border: 1px solid #bbb;
-        }
-
-        .center {
-            text-align: center;
+        .logo {
+            width: 150px;
         }
     </style>
 </head>
 
 <body>
-    <h1 class="center" style="color:red">Venta</h1>
-    <p class="center rojo">Numero factura {{ $sale->invoice_number }}</p>
-    <p class="center otrafuente">Nit {{ $sale->nit }}</p>
-    <p class="center">Nombre {{ $sale->name }}</p>
-    <p class="center">Fecha {{ $sale->sale_date }}</p>
-
-    <table class="tabla">
-        <tr class="titulo">
-            <th>Cantidad</th>
-            <th>Precio</th>
-        </tr>
-        @foreach($sale->details as $detail)
+    <table width="100%">
         <tr>
-            <td class="celda">{{ $detail->quantity }}</td>
-            <td class="celda">{{ $detail->price }}</td>
+            <td valign="top">
+                <img src="img/logo.png" class="logo" />
+            </td>
+            <td align="right">
+                <h3>Factura: #{{ $sale->invoice_number }}</h3>
+                <pre>
+                    Nombre: {{ $sale->name }}
+                    Nit: {{ $sale->nit }}
+                    Fecha: {{ date('j F, Y', strtotime($sale->sale_date)) }}
+                </pre>
+            </td>
         </tr>
-        @endforeach
+    </table>
+    <br />
+    <br />
+    <br />
+    <table width="100%">
+        <thead style="background-color: lightgray;">
+            <tr>
+                <th>#</th>
+                <th>Descricion</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $total = 0 ?>
+            @foreach($sale->details as $detail)
+            <tr>
+                <th scope="row">{{ $loop->index + 1 }}</th>
+                <td>{{ $detail->product->name }}</td>
+                <td align="right">{{ $detail->quantity }}</td>
+                <td align="right">{{ $detail->price }}</td>
+                <?php $subtotal = $detail->quantity * $detail->price ?>
+                <td align="right">{{ $subtotal }}</td>
+                <?php $total += $subtotal ?>
+            </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td align="right">Total</td>
+                <td align="right" class="gray">{{ $total }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 

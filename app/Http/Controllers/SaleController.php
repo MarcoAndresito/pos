@@ -59,7 +59,7 @@ class SaleController extends Controller
      */
     public function show($id)
     {
-        $sale =  Sale::with('details')->find($id);
+        $sale =  Sale::with(['details.product', 'user', 'client'])->find($id);
         $pdf = Pdf::loadView('sale', [
             'sale' => $sale,
         ]);

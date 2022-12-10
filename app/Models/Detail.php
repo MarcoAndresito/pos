@@ -15,4 +15,9 @@ class Detail extends Model
         'quantity',
         'price',
     ];
+
+    public function Product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
