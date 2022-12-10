@@ -19,7 +19,7 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Sale/Index', [
-            'sales' => Sale::all(),
+            'sales' => Sale::paginate(5),
         ]);
     }
 

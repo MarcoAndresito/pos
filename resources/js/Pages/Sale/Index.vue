@@ -3,7 +3,7 @@ import AppLayoutVue from '../../Layouts/AppLayout.vue';
 import ActionSection from '@/Components/ActionSection.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 defineProps({
-    sales: Array,
+    sales: Object,
 });
 </script>
 <template>
@@ -39,7 +39,7 @@ defineProps({
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="sale in sales">
+                            <tr v-for="sale in sales.data">
                                 <td>
                                     {{ sale.invoice_number }}
                                 </td>
@@ -58,9 +58,31 @@ defineProps({
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-left">
+                                    <p>mostrando de {{ sales.from }} a {{ sales.to }} ventas </p>
+                                </td>
+                                <td colspan="3" class="text-right">
+                                    <Link v-for="link in sales.links" v-bind:href="link.url"
+                                        v-bind:class="['py-1 px-2', link.active ? 'bg-indigo-400 hover:bg-indigo-700' : 'hover:bg-slate-400']"
+                                        v-html="link.label">
+                                    </Link>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </template>
             </ActionSection>
         </div>
     </AppLayoutVue>
 </template>
+<style>
+.si {
+    color: red;
+}
+
+.no {
+    color: darkgreen;
+}
+</style>
